@@ -15,8 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from . import views
+
+
+handler400 = 'docProject.views.handler400'
+handler403 = 'docProject.views.handler403'
+handler404 = 'docProject.views.handler404'
+handler500 = 'docProject.views.handler500'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('docApp.urls'))
+    path('', include('docApp.urls', namespace='docApp'))
 ]

@@ -1,36 +1,8 @@
-<html>
-  <body>
-    <h1>Welcome to our platform</h1>
-    <h3>
-      To set up your profile and dashboard, kindly provide the following details
-    </h3>
-    <form action="submit-sign-up-form" method="POST">
-      {% csrf_token %}
-      <div>
-        <label for="firstName">First name</label>
-        <input type="text" name="firstName" />
-      </div>
-      <div>
-        <label for="lastName">Last name</label>
-        <input type="text" name="lastName" />
-      </div>
-      <div>
-        <label for="sex">Gender</label>
-        <input type="text" name="sex" />
-      </div>
-      <div>
-        <label for="age">Age</label>
-        <input type="number" name="age" />
-      </div>
-      <div>
-        <label for="location">Location</label>
-        <input type="text" name="location" />
-      </div>
-      <div>
-        <label for="specialty">Specialty</label>
-        <input type="text" name="specialty" />
-      </div>
-      <button type="submit">Sign up</button>
-    </form>
-  </body>
-</html>
+<form action="/sign-up/" method="post">
+  {% csrf_token %} {{ form.non_field_errors }} {% for field in form %}
+  <div class="fieldWrapper">
+    {{ field.errors }} {{ field.label_tag }} {{ field }}
+  </div>
+  {% endfor %}
+  <input type="submit" value="Submit" />
+</form>
