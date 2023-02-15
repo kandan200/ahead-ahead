@@ -1,9 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound, Http404, HttpResponseRedirect
 from django.views import View
-from django.views.generic.edit import FormView
+from django.views.generic.edit import FormView, UpdateView
 from docApp.forms import SignUpForm
 from django.urls import reverse
+from docApp.models import UserProfile
+from django.views.generic.detail import DetailView
+from django.core.exceptions import PermissionDenied
+from django.contrib.auth.mixins import PermissionRequiredMixin
+
 
 # Create your views here.
 def home(request):
@@ -22,26 +27,34 @@ class SignUpFormView(FormView):
         form = SignUpForm()
         return render(request, 'signUp.html', {'form': form})
 
-    def form_valid(self, request):
-        name = request.POST['firstName']
-        id = request.POST['id']
-        url = reverse('user-profile')
-        return HttpResponseRedirect(url)
-
-
-class ProfileView(View):
     def post(self, request):
+        form  = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            id = form.cleaned_data['mdcn']
+            return HttpResponseRedirect(reverse('docApp:user-profile', kwargs={'id':id}),  request)
+
+
+
+class ProfileView(DetailView):
+    model = UserProfile
+
+    def get(self, request, id):
+        # if request.user.is_anonymous():
+        #     raise PermissionDenied()
+        user = UserProfile.objects.get(pk=id)
+        return render(request, 'profile.html', {'user':user})
+
+
+class EditProfileView(PermissionRequiredMixin, UpdateView):
+    model = UserProfile
+    permission_required = 'docApp.change_UserProfile'
+    permission_denied_message = '<h1>You need the update_UserProfile permision to edit this profile</h1>'
+    # template_name = 'editProfile.html'
+    fields = ['firstName', 'lastName', 'date_of_birth', 'email', 'phone_number', 'specialty', 'year_of_graduation', 'avatar', 'state_of_residence']
+    
+    def get(self, request):
+        id = request.GET['id']
+        self.object = UserProfile.objects.get_object_or_404(pk=id)
         pass
-
-
-class PathView(View):
-    def get(self, request, name, id):
-        return HttpResponse(f"<h1>Hello {name}, welcome to the platform. Your ID number is {id}</h1>")
-
-def qryView(request):
-    name = request.GET['name']
-    id = request.GET['id']
-    return HttpResponse("Welcome to the platform {}, your user ID is {}".format(name, id))
-
-
 #look out for django generic edit views for create, edit, delete profile of doctor and also for entered data
