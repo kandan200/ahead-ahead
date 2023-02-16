@@ -10,4 +10,5 @@ urlpatterns = [
     path('sign-up/', SignUpFormView.as_view(), name='sign-up'),
     path('<int:id>/', ProfileView.as_view(), name='user-profile'),
     path('<int:id>/edit/', EditProfileView.as_view(), name='edit-profile'),
+    path('log-out/', views.logout_view, name='log-out'),
 ]

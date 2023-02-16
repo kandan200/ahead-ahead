@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseNotFound, Http404, HttpResponseRedirect
 from django.views import View
 from django.views.generic.edit import FormView, UpdateView
@@ -8,9 +8,12 @@ from docApp.models import UserProfile
 from django.views.generic.detail import DetailView
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth import authenticate, login, logout
+
 
 
 # Create your views here.
+
 def home(request):
     text = '<h1>Hello Doc, welcome to ahead ahead</h1><br><button>Sign in</button><button>Create Account</button>'
     return HttpResponse(text)
@@ -31,10 +34,17 @@ class SignUpFormView(FormView):
         form  = SignUpForm(request.POST)
         if form.is_valid():
             form.save()
-            id = form.cleaned_data['mdcn']
-            return HttpResponseRedirect(reverse('docApp:user-profile', kwargs={'id':id}),  request)
-
-
+            # email = form.cleaned_data['email']
+            # password = form.clean['password']
+            id = form.cleaned_data['mdcn']           
+            # user = authenticate(request, username=email , password=password)
+            # if user is not None:
+                # login(request, user)
+                # return HttpResponseRedirect(reverse('docApp:user-profile', kwargs={'id':id}),  request)
+            # else:
+                # Return an 'invalid login' error message.
+                # pass
+        return HttpResponseRedirect(reverse('docApp:user-profile', kwargs={'id':id}),  request)
 
 class ProfileView(DetailView):
     model = UserProfile
@@ -55,6 +65,10 @@ class EditProfileView(PermissionRequiredMixin, UpdateView):
     
     def get(self, request):
         id = request.GET['id']
-        self.object = UserProfile.objects.get_object_or_404(pk=id)
+        self.object = get_object_or_404(UserProfile, pk=id)
         pass
 #look out for django generic edit views for create, edit, delete profile of doctor and also for entered data
+
+def logout_view(request):
+    logout(request)
+    pass

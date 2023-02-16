@@ -17,6 +17,7 @@ class UserProfile(models.Model):
     phone_number = models.IntegerField(null=True)
     mdcn = models.IntegerField(null=False, primary_key=True, default=123)
     state_of_residence = models.CharField(max_length=30, null=True)
+    password = models.CharField(max_length=100, null=True)
     # year_of_graduation = models.DateTimeField(null=True)
     # certificate = models.FileField(null=True)
     # avatar = models.ImageField(null=True)
