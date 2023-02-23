@@ -1,4 +1,6 @@
-<form action="{% url 'docApp:sign-up' %}" method="post">
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<form action="{% url 'docApp:sign-in' %}" method="post">
   {% csrf_token %} {{ form.non_field_errors }} {% for field in form %}
   <div class="fieldWrapper">
     {{ field.errors }} {{ field.label_tag }} {{ field }}
@@ -6,3 +8,5 @@
   {% endfor %}
   <input type="submit" value="Submit" />
 </form>
+
+{% endblock %}

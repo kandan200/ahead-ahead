@@ -1,34 +1,46 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseNotFound, Http404, HttpResponseRedirect
 from django.views import View
-from django.views.generic.edit import FormView, UpdateView
-from docApp.forms import SignUpForm
+from django.views.generic.edit import FormView, UpdateView, DeleteView
+from docApp.forms import SignUpForm, SignInForm
 from django.urls import reverse
-from docApp.models import UserProfile
+from docApp.models import Doctore
 from django.views.generic.detail import DetailView
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth import authenticate, login, logout
 
-
-
 # Create your views here.
 
 def home(request):
-    text = '<h1>Hello Doc, welcome to ahead ahead</h1><br><button>Sign in</button><button>Create Account</button>'
-    return HttpResponse(text)
+    return render(request, 'home.html')
 
-def signIn(request):
-    form = "<html><body><h1>Welcome Back</h1><form><div><label for='email'>Email</label><input type='email' name='email'></div><div><label for='password'>Password</label><input type='password' name='password'></div><div><button type='submit'>Sign in</button></form></body></html>"
-    return HttpResponse(form)
+class SignInFormView(FormView):
+    template_name = 'docApp:signIn.html'
+    form_class = SignInForm
+
+    def get(self, request):
+        form = SignInForm()
+        return render(request, 'docApp:signIn.html', {'form': form})
+
+    def post(self, request):
+        form = SignInForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            doctore = Doctore.objects.get(email=email)
+            id = doctore.mdcn
+        return HttpResponseRedirect(reverse('docApp:user-profile', kwargs={'id':id}),  request)
+
 
 class SignUpFormView(FormView):
-    template_name = 'signUp.html'
+    # i can use CreateView generic view to implement this view too
+    template_name = 'docApp:signUp.html'
     form_class = SignUpForm
+ # explore use of success_url attribute as a way to redirect after succesful saving of object to the model 
 
     def get(self, request):
         form = SignUpForm()
-        return render(request, 'signUp.html', {'form': form})
+        return render(request, 'docApp:signUp.html', {'form': form})
 
     def post(self, request):
         form  = SignUpForm(request.POST)
@@ -47,17 +59,17 @@ class SignUpFormView(FormView):
         return HttpResponseRedirect(reverse('docApp:user-profile', kwargs={'id':id}),  request)
 
 class ProfileView(DetailView):
-    model = UserProfile
+    model = Doctore
 
     def get(self, request, id):
         # if request.user.is_anonymous():
         #     raise PermissionDenied()
-        user = UserProfile.objects.get(pk=id)
-        return render(request, 'profile.html', {'user':user})
+        user = Doctore.objects.get(pk=id)
+        return render(request, 'docApp:profile.html', {'user':user})
 
 
 class EditProfileView(PermissionRequiredMixin, UpdateView):
-    model = UserProfile
+    model = Doctore
     permission_required = 'docApp.change_UserProfile'
     permission_denied_message = '<h1>You need the update_UserProfile permision to edit this profile</h1>'
     # template_name = 'editProfile.html'
@@ -65,10 +77,18 @@ class EditProfileView(PermissionRequiredMixin, UpdateView):
     
     def get(self, request):
         id = request.GET['id']
-        self.object = get_object_or_404(UserProfile, pk=id)
+        self.object = get_object_or_404(Doctore, pk=id)
         pass
 #look out for django generic edit views for create, edit, delete profile of doctor and also for entered data
 
 def logout_view(request):
     logout(request)
     pass
+
+class DeleteProfileView(DeleteView):   
+    model = Doctore  
+    success_url = '<int:id>/delete/success/'
+    template_name = 'docApp:deleteprofile.html'
+
+def DeleteProfileSuccessView(request):
+    return render(request, 'succesful_delete.html')
