@@ -18,6 +18,9 @@ class UserProfileAdmin(admin.ModelAdmin):
     }),
     ('Proffesional Details', {
         'fields': ('specialty', 'mdcn')
+    }),
+    ('Security', {
+        'fields':('password',)
     }))
     # fields = [('firstName', 'lastName'), 'sex', ('email', 'phone_number', 'state_of_residence'), ('specialty', 'mdcn')]
 admin.site.register(Participants)

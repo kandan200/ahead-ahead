@@ -4,14 +4,15 @@
     Welcome to Ahead, <small>a database management tool for reseacrh</small>
   </h1>
   <p>Have an account with us?</p>
-  <form action="{% url 'docApp:sign-up' %}" method="get">
-    {% csrf_token %}
-    <input type="submit" value="Submit" />
-  </form>
-
   <form action="{% url 'docApp:sign-in' %}" method="get">
     {% csrf_token %}
-    <input type="submit" value="Submit" />
+    <input type="submit" value="Sign In" />
+  </form>
+
+  <p>Don't have an account with us yet?</p>
+  <form action="{% url 'docApp:sign-up' %}" method="get">
+    {% csrf_token %}
+    <input type="submit" value="Sign Up" />
   </form>
 </section>
 {% endblock %}

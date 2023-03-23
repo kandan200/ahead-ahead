@@ -20,16 +20,18 @@ admitted = (
     ('N', 'No')
 )
 class Doctore(models.Model):
-    firstName = models.CharField(max_length=100)
-    lastName = models.CharField(max_length=100)
+    firstName = models.CharField(max_length=100, verbose_name='First Name')
+    lastName = models.CharField(max_length=100, verbose_name='Last Name')
     # date_of_birth = models.DateTimeField(null=True)
-    sex = models.CharField(choices=gender, max_length=20)
-    specialty = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
-    phone_number = models.IntegerField(null=True)
-    mdcn = models.IntegerField(null=False, primary_key=True, default=123)
-    state_of_residence = models.CharField(max_length=30, null=True)
-    password = models.CharField(max_length=100, null=True)
+    sex = models.CharField(choices=gender, max_length=20, verbose_name='Sex')
+    specialty = models.CharField(max_length=100, verbose_name='Specialty')
+    email = models.EmailField(unique=True, verbose_name='Email')
+    phone_number = models.CharField(max_length=11, verbose_name='Phone Number')
+    mdcn = models.IntegerField(null=False, primary_key=True, default=123, verbose_name='MDCN Folio Number')
+    state_of_residence = models.CharField(max_length=30, verbose_name='State of Residence')
+    password = models.CharField(max_length=100, verbose_name='Password')
+    confirm_password = models.CharField(max_length=100, verbose_name='Password')
+
     # year_of_graduation = models.DateTimeField(null=True)
     # certificate = models.FileField(null=True)
     # avatar = models.ImageField(null=True)
@@ -42,29 +44,29 @@ class Doctore(models.Model):
     
 
 class Research(models.Model):
-    id =models.CharField(max_length=100, primary_key=True)
-    title = models.CharField(max_length=300)
-    start_date = models.DateField()
-    doctor = models.ForeignKey(Doctore, on_delete=models.CASCADE)
+    id =models.CharField(max_length=100, primary_key=True, verbose_name='Research ID')
+    title = models.CharField(max_length=300, verbose_name='Research Title')
+    start_date = models.DateField(verbose_name='Research Start Date')
+    doctor = models.ForeignKey(Doctore, on_delete=models.CASCADE, null=True)
     # assistant = models.ForeignKey(Doctor, on_delete=models.CASCADE)
-    sample_size = models.IntegerField()
+    sample_size = models.IntegerField(verbose_name='Research Sample Size')
 
     def __str__(self):
         return self.title
 
 
 class Participants(models.Model):
-    id = models.IntegerField(primary_key=True)
-    research = models.ForeignKey(Research, on_delete=models.CASCADE)
-    facility = models.CharField(max_length=200)
-    age = models.IntegerField()
-    sex = models.CharField(choices=gender, max_length=20)
-    education = models.CharField(choices=school, max_length=50)
-    occupation = models.CharField(max_length=100)
-    tribe = models.CharField(max_length=50)
-    presentation_date = models.DateField()
-    diagnosis = models.CharField(max_length=200)
-    adnission = models.CharField(choices=admitted, max_length=100)
+    id = models.CharField(primary_key=True, verbose_name='Participant ID', max_length=200)
+    research = models.ForeignKey(Research, on_delete=models.CASCADE, null=True)
+    facility = models.CharField(max_length=200, verbose_name='Healthcare Facility')
+    age = models.IntegerField(verbose_name='Age')
+    sex = models.CharField(choices=gender, max_length=20, verbose_name='Sex')
+    education = models.CharField(choices=school, max_length=50, verbose_name='Level of Education')
+    occupation = models.CharField(max_length=100, verbose_name='Occupation')
+    tribe = models.CharField(max_length=50, verbose_name='Tribe')
+    presentation_date = models.DateField(verbose_name='Date of Presentation')
+    diagnosis = models.CharField(max_length=200, verbose_name='Diagnosis')
+    adnission = models.CharField(choices=admitted, max_length=100, verbose_name='Admission Status')
 
     def __str__(self):
         return f'Participant in {self.research}'

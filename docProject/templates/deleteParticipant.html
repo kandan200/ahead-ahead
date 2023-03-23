@@ -1,0 +1,14 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<form
+  action="{% url 'docApp:delete-participant' p_id=p_id r_id=r_id %}"
+  method="post"
+>
+  {% csrf_token %}
+
+  <p>Are you sure you want to delete Participant: {{ p_id }}?</p>
+  {{ form }}
+  <input type="submit" value="Confirm" />
+</form>
+
+{% endblock %}

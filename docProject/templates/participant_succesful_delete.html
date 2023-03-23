@@ -1,0 +1,8 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<h2>Participant has been succesfully deleted.</h2>
+<form action="{% url 'docApp:research-info' r_id=r_id id=mdcn %}" method="get">
+  <input type="submit" value="Research Home" />
+</form>
+
+{% endblock %}

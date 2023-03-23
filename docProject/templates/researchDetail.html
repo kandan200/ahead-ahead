@@ -1,0 +1,36 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<h2>Title: {{research.title| title}}</h2>
+<br />
+<p>By: {{research.doctor}}</p>
+<br />
+<br />
+{% comment %}
+<h3>
+  There are: {{research.participants_set.count()}} participants in this research
+</h3>
+<h3>The research started on the {{research.start_date}}</h3>
+{% endcomment %}
+
+<form
+  action="{% url 'docApp:edit-research' id=id r_id=research.id %}"
+  method="get"
+>
+  {% csrf_token %}
+  <input type="submit" value="Edit" />
+</form>
+
+<form
+  action="{% url 'docApp:delete-research' id=id r_id=research.id %}"
+  method="get"
+>
+  {% csrf_token %}
+  <input type="submit" value="Delete" />
+</form>
+
+<form action="{% url 'docApp:add-participant' r_id=research.id %}" method="get">
+  {% csrf_token %}
+  <input type="submit" value="Add Participant" />
+</form>
+
+{% endblock %}

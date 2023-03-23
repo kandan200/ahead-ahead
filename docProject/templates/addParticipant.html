@@ -1,7 +1,7 @@
 {% extends 'base.html' %} {% load static %} {% block content %}
 
-<form action="{% url 'docApp:sign-up' %}" method="post">
-  {% csrf_token %} {{ form.non_field_errors }} {% for field in form %}
+<form action="{% url 'docApp:add-participant' r_id=r_id %}" method="post">
+  {{ form.non_field_errors }} {% csrf_token %} {% for field in form %}
   <div class="fieldWrapper">
     {{ field.errors }} {{ field.label_tag }} {{ field }}
   </div>

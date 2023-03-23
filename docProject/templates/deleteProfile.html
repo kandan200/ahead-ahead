@@ -1,0 +1,11 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<form action="{% url 'docApp:delete-profile' id=id %}" method="post">
+  {% csrf_token %}
+
+  <p>Are you sure you want to delete Doctor: {{ id }}?</p>
+  {{ form }}
+  <input type="submit" value="Confirm" />
+</form>
+
+{% endblock %}

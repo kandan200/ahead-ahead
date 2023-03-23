@@ -1,0 +1,35 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<h2>Research: {{research.title| title}}</h2>
+<br />
+<p>Participant number: {{p_id}}</p>
+<br />
+<br />
+{% comment %}
+<h3>
+  There are a total of: {{research.participants_set.count()}} participants in
+  this research
+</h3>
+<h3>
+  This participant presented on {{participant.presentation_date}} and was
+  diagnosed of {participant.diagnosis}}
+</h3>
+{% endcomment %}
+
+<form
+  action="{% url 'docApp:edit-participant' r_id=r_id p_id=p_id %}"
+  method="get"
+>
+  {% csrf_token %}
+  <input type="submit" value="Edit Participant" />
+</form>
+
+<form
+  action="{% url 'docApp:delete-participant' r_id=r_id p_id=p_id %}"
+  method="get"
+>
+  {% csrf_token %}
+  <input type="submit" value="Delete Participant" />
+</form>
+
+{% endblock %}

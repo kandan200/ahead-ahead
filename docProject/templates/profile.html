@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ahead-Ahead</title>
+  </head>
+  <body>
+    <main>
+      {% for message in messages %}
+      <div
+        class="alert alert-{{ message.tags }} alert-dismissible fake show"
+        role="alert"
+      >
+        <strong>Message:</strong> {{ message }}
+        <button
+          type="button"
+          class="close"
+          data-dismiss="alert"
+          aria-label="close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %} 
+      {% if user.is_authenticated %}
+      <h1>Hello Dr {{ user.firstName }}</h1>
+      {% comment %}
+      <p>You currently have user.reseacrh_set.count() on going</p>
+      {% for research in user.research_set %} {link to research display page}
+      <p>{{research.title}}</p>
+      <p>{{research.dates('start_date', 'month')}}</p>
+      {% endfor %} {% endcomment %}
+
+      <br />
+      <br />
+      <form
+        action="{% url 'docApp:start-research' id=user.mdcn %}"
+        method="get"
+      >
+        {% csrf_token %}
+        <input type="submit" value="create research" />
+      </form>
+      <br />
+      <br />
+      <form action="{% url 'docApp:edit-profile' id=user.mdcn %}" method="get">
+        {% csrf_token %}
+        <input type="submit" value="Edit Profile" />
+      </form>
+      <br />
+      <br />
+      <form
+        action="{% url 'docApp:delete-profile' id=user.mdcn %}"
+        method="get"
+      >
+        {% csrf_token %}
+        <input type="submit" value="Delete Profile" />
+      </form>
+      <br />
+      <br />
+      <form action="{% url 'docApp:log-out' %}" method="get">
+        {% csrf_token %}
+        <input type="submit" value="Log Out" />
+      </form>
+      {% else %}
+      <p>Don't have an account with us yet?</p>
+      <form action="{% url 'docApp:sign-up' %}" method="get">
+        {% csrf_token %}
+        <input type="submit" value="Sign Up" />
+      </form>
+      {% endif %}
+    </main>
+  </body>
+</html>
