@@ -33,7 +33,7 @@ SECRET_KEY = 'django-insecure-zdv#(^8(em_#it3^xuj#m(iwjkan)@01($=!6sh4ry_dfhltrq
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -84,9 +84,15 @@ WSGI_APPLICATION = 'docProject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': BASE_DIR / 'db.sqlite3',
+         'ENGINE': 'django.db.backends.mysql',
+         'NAME': 'ahead_db',
+         'HOST' : 'mysql',
+         'PORT' : '3306',
+         'USER' : 'root',
+         'PASSWORD' : 'secret',    
+        }
 }
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
