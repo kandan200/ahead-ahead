@@ -9,50 +9,66 @@
 # https://github.com/docker/awesome-compose
 
 name: ahead
+#x-aws-vpc: "vpc-25435e"
+#x-aws-cluster: "ClusterName"
+#x-aws-loadbalancer: "LoadBalancerName"
 services:
   mysql:
     image: mysql:8.0
     volumes:
-      type: volume
-      source: ahead-data
-      target: /var/lib/mysql
+      - type: volume
+        source: ahead-data
+        target: /var/lib/mysql
 
     cpu_count: 2
     cpu_percent: 70
     container_name: mysql
     ports:
       - '3306:3306'
+        x-aws-protocol: http
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: ahead_db
-    network_mode: "service:server"
+    deploy:
+      resources:
+      limits:
+        cpus: '0.5'
+        memory: 2GB
+      x-aws-autoscaling: 
+        cpu: 75
+
+    x-aws-policies:
+      - "arn:aws:iam::938068459765:role/containerization"
+
+x-aws-logs_retention: 10
+#    network_mode: "service:server"
 
   server:
-    build: .
-#    image: kandan200/ahead-ahead
+#    build: .
+    image: kandan200/ahead-ahead
     ports:
       - '8000:8000'
+        x-aws-protocol: http
     volumes:
       - .:/app:rw #for cloud deployment, avoid relative paths
 #      type: bind
 #      source: .
 #      target: /app
-    depends_on:
-      - mysql
     develop:
-          watch:
-            - action: rebuild
-              path: requirements.txt
+      watch:
+        - action: rebuild
+          path: requirements.txt
 
-            - action: sync
-              path:
-              target: /app/docApp/
+        - action: sync
+          path: .
+          target: /app
+  #        ignore: 
     depends_on:
       mysql:
         restart: true
-        condition: service_healthy    
-    links:
-      - mysql
+        condition: service_started    
+#    links:
+#      - mysql
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8000 || exit 1"]
       interval: 1m30s
@@ -60,6 +76,19 @@ services:
       retries: 3
       start_period: 40s
       start_interval: 5s
+    deploy:
+      resources:
+      limits:
+        cpus: '0.5'
+        memory: 2GB
+      x-aws-autoscaling: 
+        cpu: 75
+
+    x-aws-policies:
+      - "arn:aws:iam::938068459765:role/containerization"
+      
+x-aws-logs_retention: 10
+
 #    user:
 
 
@@ -70,6 +99,6 @@ services:
 #    env_file:
 #      - fileName
 
-#volumes:
-#  ahead-data:
-#    driver: local
+volumes:
+  ahead-data:
+    driver: local
