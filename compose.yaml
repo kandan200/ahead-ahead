@@ -7,34 +7,68 @@
 # You can add other services your application may depend on here, such as a
 # database or a cache. For examples, see the Awesome Compose repository:
 # https://github.com/docker/awesome-compose
+
+name: ahead
 services:
   mysql:
     image: mysql:8.0
     volumes:
-      - ahead-data:/var/lib/mysql
+      type: volume
+      source: ahead-data
+      target: /var/lib/mysql
+
+    cpu_count: 2
+    cpu_percent: 70
+    container_name: mysql
     ports:
       - '3306:3306'
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: ahead_db
-    depends_on:
-      - server
+    network_mode: "service:server"
 
   server:
-#    build: .
-    image: kandan200/ahead-ahead
+    build: .
+#    image: kandan200/ahead-ahead
     ports:
       - '8000:8000'
     volumes:
-      - .:/app
+      - .:/app:rw #for cloud deployment, avoid relative paths
+#      type: bind
+#      source: .
+#      target: /app
     depends_on:
       - mysql
+    develop:
+          watch:
+            - action: rebuild
+              path: requirements.txt
 
-      #for automatic reloading of app when changes are made to source code
-#develop:
- #     watch:
-  #      - action: rebuild
-   #       path: .
+            - action: sync
+              path:
+              target: /app/docApp/
+    depends_on:
+      mysql:
+        restart: true
+        condition: service_healthy    
+    links:
+      - mysql
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000 || exit 1"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+      start_interval: 5s
+#    user:
+
+
+#    labels:
+#      com.example.description: "Research data management webapp"
+#      com.example.department: "Research"
+
+#    env_file:
+#      - fileName
 
 #volumes:
 #  ahead-data:
