@@ -8,7 +8,7 @@
 # database or a cache. For examples, see the Awesome Compose repository:
 # https://github.com/docker/awesome-compose
 
-name: ahead
+#name: ahead
 #x-aws-vpc: "vpc-25435e"
 #x-aws-cluster: "ClusterName"
 #x-aws-loadbalancer: "LoadBalancerName"
@@ -20,35 +20,34 @@ services:
         source: ahead-data
         target: /var/lib/mysql
 
-    cpu_count: 2
-    cpu_percent: 70
-    container_name: mysql
+#    cpu_count: 1
+#    cpu_percent: 5
+#    container_name: mysql
     ports:
       - '3306:3306'
-        x-aws-protocol: http
+#      - x-aws-protocol: http
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: ahead_db
-    deploy:
-      resources:
-      limits:
-        cpus: '0.5'
-        memory: 2GB
-      x-aws-autoscaling: 
-        cpu: 75
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '0.1'
+#          memory: 30MB
+#        x-aws-autoscaling: 
+#          cpu: 1
 
-    x-aws-policies:
-      - "arn:aws:iam::938068459765:role/containerization"
+#    x-aws-policies:
+#      - "arn:aws:iam::938068459765:role/containerization"
 
-x-aws-logs_retention: 10
 #    network_mode: "service:server"
 
   server:
-#    build: .
-    image: kandan200/ahead-ahead
+    build: .
+#    image: kandan200/ahead-ahead
     ports:
       - '8000:8000'
-        x-aws-protocol: http
+#      - x-aws-protocol: http
     volumes:
       - .:/app:rw #for cloud deployment, avoid relative paths
 #      type: bind
@@ -76,18 +75,17 @@ x-aws-logs_retention: 10
       retries: 3
       start_period: 40s
       start_interval: 5s
-    deploy:
-      resources:
-      limits:
-        cpus: '0.5'
-        memory: 2GB
-      x-aws-autoscaling: 
-        cpu: 75
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '0.1'
+#          memory: 30MB
+#        x-aws-autoscaling: 
+#          cpu: 1
 
-    x-aws-policies:
-      - "arn:aws:iam::938068459765:role/containerization"
+#    x-aws-policies:
+#      - "arn:aws:iam::938068459765:role/containerization"
       
-x-aws-logs_retention: 10
 
 #    user:
 

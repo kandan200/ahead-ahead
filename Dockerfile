@@ -9,7 +9,8 @@ RUN --mount=type=bind,source=requirements.txt,target=/tmp/requirements.txt \
 #COPY requirements.txt /app
 
 #RUN  python3 -m pip install -r requirements.txt
-RUN --mount=type=bind,target=. 
+RUN --mount=type=bind,target=.
+#    rm -r ./docApp/migrations/*.py
 #COPY . /app
 EXPOSE 8000
 CMD bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
