@@ -1,4 +1,4 @@
-{% load static %}
+ {% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -25,7 +25,6 @@
         </button>
       </div>
       {% endfor %} 
-      {% if user.is_authenticated %}
       <h1>Hello Dr {{ user.firstName }}</h1>
       {% comment %}
       <p>You currently have user.reseacrh_set.count() on going</p>
@@ -64,13 +63,6 @@
         {% csrf_token %}
         <input type="submit" value="Log Out" />
       </form>
-      {% else %}
-      <p>Don't have an account with us yet?</p>
-      <form action="{% url 'docApp:sign-up' %}" method="get">
-        {% csrf_token %}
-        <input type="submit" value="Sign Up" />
-      </form>
-      {% endif %}
     </main>
   </body>
 </html>
